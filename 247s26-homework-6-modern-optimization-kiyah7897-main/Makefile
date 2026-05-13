@@ -1,0 +1,86 @@
+CC=gcc
+CFLAGS=-I. -g
+CPP=g++
+CPPFLAGS=-I. -g -std=c++11
+DEPS =
+ODDOBJ = oddinacci.o
+MATOBJ = matrix.o
+MAT0OBJ = mat0.o
+MAT1OBJ = mat1.o
+MAT2OBJ = mat2.o
+MEASUREOBJ = measure.o
+TRANSPOSEOBJ = transpose.o
+TESTTARGET=opt_test
+ODDTARGET=odd
+MAT0TARGET=mat0
+MAT1TARGET=mat1
+MAT2TARGET=mat2
+TRANSPOSETARGET=transpose
+HASHTABLETARGET=hashtable
+TESTMAIN=tests/test_main.o
+ODDMAIN=oddinacci_main.o
+MAT0MAIN=mat0_main.o
+MAT1MAIN=mat1_main.o
+MAT2MAIN=mat2_main.o
+TRANSPOSE_MAIN=transpose_main.o
+HASHTABLEOBJ=hashtable.o
+HASHTABLE_MAIN=hashtable_main.o
+LISTOBJ=list.o
+SMALLMALLOCOBJ = smallmalloc.o
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+%.o: %.cpp $(DEPS)
+	$(CPP) -c -o $@ $< $(CPPFLAGS)
+
+default: $(TESTTARGET) $(ODDTARGET) $(MAT0TARGET) $(MAT1TARGET) $(MAT2TARGET) $(TRANSPOSETARGET) $(HASHTABLETARGET)
+
+$(ODDTARGET): $(ODDOBJ) $(ODDMAIN) $(MEASUREOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(MAT0TARGET): $(MAT0OBJ) $(MAT0MAIN) $(MEASUREOBJ) $(MATOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(MAT1TARGET): $(MAT1OBJ) $(MAT1MAIN) $(MEASUREOBJ) $(MATOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(MAT2TARGET): $(MAT2OBJ) $(MAT2MAIN) $(MEASUREOBJ) $(MATOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(TRANSPOSETARGET): $(TRANSPOSEOBJ) $(TRANSPOSE_MAIN) $(MEASUREOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+$(LISTOBJ): list.c list.h
+	$(CC) -c $^ $(CFLAGS)
+
+$(HASHTABLETARGET): $(HASHTABLEOBJ) $(LISTOBJ) $(HASHTABLE_MAIN) $(SMALLMALLOCOBJ) $(MEASUREOBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+clean:
+	rm -f *.o tests/*.o $(TESTTARGET) $(ODDTARGET) $(MAT0TARGET) $(MAT1TARGET) $(MAT2TARGET) $(TRANSPOSETARGET) $(HASHTABLETARGET)
+
+
+$(TESTTARGET): $(ODDOBJ) $(MATOBJ) $(MAT0OBJ) $(MAT1OBJ) $(MAT2OBJ) $(MEASUREOBJ) $(TESTMAIN) $(TRANSPOSEOBJ) $(HASHTABLEOBJ) $(LISTOBJ) $(SMALLMALLOCOBJ)
+	$(CPP) $^ -o $@ $(CPPFLAGS)
+
+test-odd: $(TESTTARGET)
+	./$(TESTTARGET) Oddinacci
+
+test-mat0: $(TESTTARGET)
+	./$(TESTTARGET) Matrix0
+
+test-mat1: $(TESTTARGET)
+	./$(TESTTARGET) Matrix1
+
+test-mat2: $(TESTTARGET)
+	./$(TESTTARGET) Matrix2
+
+test-transpose: $(TESTTARGET)
+	./$(TESTTARGET) Transpose
+
+test-hashtable: $(TESTTARGET)
+	./$(TESTTARGET) Hashtable
+
+test: $(TESTTARGET)
+	./$(TESTTARGET)

@@ -1,0 +1,79 @@
+name: Autograding Tests
+'on': 
+- push
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: self-hosted
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Test 1. Oddinacci
+      id: test-1-oddinacci
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 1. Oddinacci
+        setup-command: ''
+        command: make test-odd
+        timeout: 10
+        max-score: 1
+    - name: Test 2. mat0
+      id: test-2-mat0
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 2. mat0
+        setup-command: ''
+        command: make test-mat0
+        timeout: 10
+        max-score: 1
+    - name: Test 3. mat1
+      id: test-3-mat1
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 3. mat1
+        setup-command: ''
+        command: make test-mat1
+        timeout: 10
+        max-score: 2
+    - name: Test 4. mat2
+      id: test-4-mat2
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 4. mat2
+        setup-command: ''
+        command: make test-mat2
+        timeout: 10
+        max-score: 2
+    - name: Test 5. Transpose
+      id: test-5-transpose
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 5. Transpose
+        setup-command: ''
+        command: make test-transpose
+        timeout: 10
+        max-score: 2
+    - name: Test 6. Hashtable
+      id: test-6-hashtable
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 6. Hashtable
+        setup-command: ''
+        command: make test-hashtable
+        timeout: 10
+        max-score: 2
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST-1-ODDINACCI_RESULTS: "${{steps.test-1-oddinacci.outputs.result}}"
+        TEST-2-MAT0_RESULTS: "${{steps.test-2-mat0.outputs.result}}"
+        TEST-3-MAT1_RESULTS: "${{steps.test-3-mat1.outputs.result}}"
+        TEST-4-MAT2_RESULTS: "${{steps.test-4-mat2.outputs.result}}"
+        TEST-5-TRANSPOSE_RESULTS: "${{steps.test-5-transpose.outputs.result}}"
+        TEST-6-HASHTABLE_RESULTS: "${{steps.test-6-hashtable.outputs.result}}"
+      with:
+        runners: test-1-oddinacci,test-2-mat0,test-3-mat1,test-4-mat2,test-5-transpose,test-6-hashtable
