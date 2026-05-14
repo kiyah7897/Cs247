@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "transpose.h"
-
+#define BLOCK 16
 
 // Fill a matrix of ints of rows and cols with random values
 void transpose_fill(int* matrix, int rows, int cols) {
@@ -49,4 +49,22 @@ void transpose_slow(int* src, int rows, int cols, int* dst) {
 
 void transpose_fast(int* src, int rows, int cols, int* dst) {
     // Your code here
+    for(int i = 0; i < rows; i+= BLOCK){
+        int end_of_row = i + BLOCK;
+        if(end_of_row > rows){
+            end_of_row = rows;
+        }
+        for(int j = 0; j < cols; j+= BLOCK){  
+        int end_of_col = j + BLOCK;
+        if (end_of_col > cols){
+            end_of_col = cols;
+        }
+        for (int ii = i; ii < end_of_row; ii++) {
+        for (int jj = j; jj< end_of_col; jj++) {
+        dst[jj * rows + ii] = src[ii * cols + jj];
+        }
+        }
+    }
+    }
+
 }

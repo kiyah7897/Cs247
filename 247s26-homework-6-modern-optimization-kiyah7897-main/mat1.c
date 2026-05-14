@@ -17,5 +17,16 @@ long mat1_slow(matrix_t mat) {
 }
 
 long mat1_fast(matrix_t mat) {
-    return 0;
+    long sum = 0;
+    int row = matrix_rows(mat);
+    int cols = matrix_cols(mat);
+    for (int i = 0; i < row; i ++){
+        int row_result = 0;
+        int orgi = matrix_get(mat ,i ,0);
+        for (int j = 0; j <cols; j++){
+            row_result += orgi + matrix_get(mat, i ,j);
+        }
+        sum += row_result;
+    }
+    return sum;
 }
