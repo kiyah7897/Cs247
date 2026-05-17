@@ -30,7 +30,7 @@ bool list_lookup(node_t* list, int key, int* pvalue);
 typedef struct fastnode {
     int top;
     int bottom;
-#define SIZE 30
+#define SIZE 29
     struct {
         int key;
         int value;

@@ -90,7 +90,7 @@ int main() {
     arg_t arg;
     arg.hash = hash;
     arg.items = ITEMS;
-    double slow = measure_func(verify_table, &arg);
+    double slow = measure_func(verify_table, &arg,1);
     printf("Slow table took %f\n", slow);
     hashtable_free(hash);
 
@@ -102,7 +102,7 @@ int main() {
         (bool (*)(node_t*, int, int*)) fastlist_lookup);
     arg.hash = fasthash;
     arg.items = ITEMS;
-    double fast = measure_func(verify_table, &arg);
+    double fast = measure_func(verify_table, &arg,1);
     printf("Fast table took %f\n", fast);
     hashtable_free(fasthash);
 
