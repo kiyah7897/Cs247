@@ -94,6 +94,7 @@ void fastlist_add(fastnode_t** fastlist, int key, int value) {
             node->next = newNode;
             return;
         }
+            node = node->next;
         
     }
     }
