@@ -36,10 +36,11 @@ unsigned char cache_get(cache_t* cache, int memory_location, int* latency) {
                 return cache->entries[i].page->bytes[memory_location % PAGESIZE];
             }
         }
-
+    }
             page_t* current = store_get(cache->store, memory_location);
             if(cache->numEntries != cache->size){
                 cache->entries[cache->numEntries].page = current;
+                current->pageno = pageNumber;
                 *latency = STORE_LATENCY;
                 cache->entries[cache->numEntries].timeStamp = cache->counter;
                 cache->numEntries++;
@@ -60,6 +61,7 @@ unsigned char cache_get(cache_t* cache, int memory_location, int* latency) {
 
                     }
                             cache->entries[index].page = current;
+                            current->pageno = pageNumber;
                             cache->entries[index].timeStamp = cache->counter;
                             cache->counter++;
                     
@@ -75,6 +77,7 @@ unsigned char cache_get(cache_t* cache, int memory_location, int* latency) {
                         }
                     }
                         cache->entries[index].page = current;
+                        current->pageno = pageNumber;
                         cache->entries[index].timeStamp = cache->counter;
                         cache->counter++;
 
@@ -90,6 +93,7 @@ unsigned char cache_get(cache_t* cache, int memory_location, int* latency) {
                         }
                     }
                         cache->entries[index].page = current;
+                        current->pageno = pageNumber;
                         cache->entries[index].timeStamp = cache->counter;
                         cache->counter++;
 
@@ -98,7 +102,7 @@ unsigned char cache_get(cache_t* cache, int memory_location, int* latency) {
                 }
             
             return current->bytes[memory_location % PAGESIZE];
-    }
+
     return 0;
 }
 
