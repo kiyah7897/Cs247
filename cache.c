@@ -43,38 +43,58 @@ unsigned char cache_get(cache_t* cache, int memory_location, int* latency) {
                 cache->counter++;
                 return current->bytes[memory_location % PAGESIZE];
             }else{
-                switch(cache->poliy){
+                *latency = STORE_LATENCY;
+                switch(cache->policy){
                     case FIFO:
-                    //find entry with lowest timestamp insert first
+                    //find entry with lowest timeStamp insert first
                     int lastUsed = cache->entries[0].timeStamp;
                     int index = 0;
                     for (int i = 0; i < cache->size; i++){
                         if(cache->entries[i].timeStamp < lastUsed){
                             lastUsed = cache->entries[i].timeStamp;
                             index = i;
-                            cache->entries[index].pages = current;
+                        }
+
+                    }
+                            cache->entries[index].page = current;
                             cache->entries[index].timeStamp = cache->counter;
                             cache->counter++;
-                        }
-                    }
+                    
                     break;
 
                     case LRU:
+                    int lastUsed = cache->entries[0].timeStamp;
+                    int index = 0;
+                    for (int i = 0; i < cache->size; i++){
+                        if(cache->entries[i].timeStamp < lastUsed){
+                            lastUsed = cache->entries[i].timeStamp;
+                            index = i;
+                        }
+                    }
+                        cache->entries[index].page = current;
+                        cache->entries[index].timeStamp = cache->counter;
+                        cache->counter++;
 
                     break;
 
                     case MRU:
+                    int lastUsed = cache->entries[0].timeStamp;
+                    int index = 0;
+                    for (int i = 0; i < cache->size; i++){
+                        if(cache->entries[i].timeStamp > lastUsed){
+                            lastUsed = cache->entries[i].timeStamp;
+                            index = i;
+                        }
+                    }
+                        cache->entries[index].page = current;
+                        cache->entries[index].timeStamp = cache->counter;
+                        cache->counter++;
 
                     break;
                 }
             }
+            return current->bytes[memory_location % PAGESIZE];
     }
-  
-    // If it does, it retrieves the Page from the cache, and updates the cache,
-    // and returns the value.
-    // If the Page is not present, it goes to the store to retrieve the page,
-    // updates the cache and returns the value.
-    // The time required for the get is set in the latency pointer.
     return 0;
 }
 
