@@ -1,0 +1,110 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Test 1. Cache and Store Creation
+      id: test-1-cache-and-store-creation
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 1. Cache and Store Creation
+        setup-command: ''
+        command: make test-create
+        timeout: 10
+        max-score: 1
+    - name: Test 2. FIFO policy
+      id: test-2-fifo-policy
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 2. FIFO policy
+        setup-command: ''
+        command: make test-fifo
+        timeout: 10
+        max-score: 1
+    - name: Test 3. LRU policy
+      id: test-3-lru-policy
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 3. LRU policy
+        setup-command: ''
+        command: make test-lru
+        timeout: 10
+        max-score: 1
+    - name: Test 4. MRU policy
+      id: test-4-mru-policy
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 4. MRU policy
+        setup-command: ''
+        command: make test-mru
+        timeout: 10
+        max-score: 1
+    - name: Test 5. FIFO sim
+      id: test-5-fifo-sim
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 5. FIFO sim
+        setup-command: ''
+        command: make test-sim-fifo
+        timeout: 10
+        max-score: 1
+    - name: Test 6. LRU Sim
+      id: test-6-lru-sim
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 6. LRU Sim
+        setup-command: ''
+        command: make test-sim-lru
+        timeout: 10
+        max-score: 2
+    - name: Test 7. MRU sim
+      id: test-7-mru-sim
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 7. MRU sim
+        setup-command: ''
+        command: make test-sim-mru
+        timeout: 10
+        max-score: 1
+    - name: Test 8. Memory
+      id: test-8-memory
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 8. Memory
+        setup-command: sudo apt update && sudo apt install valgrind
+        command: make test-memory
+        timeout: 10
+        max-score: 1
+    - name: Test 9. Style
+      id: test-9-style
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 9. Style
+        setup-command: sudo pip3 install cpplint
+        command: make test-style
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST-1-CACHE-AND-STORE-CREATION_RESULTS: "${{steps.test-1-cache-and-store-creation.outputs.result}}"
+        TEST-2-FIFO-POLICY_RESULTS: "${{steps.test-2-fifo-policy.outputs.result}}"
+        TEST-3-LRU-POLICY_RESULTS: "${{steps.test-3-lru-policy.outputs.result}}"
+        TEST-4-MRU-POLICY_RESULTS: "${{steps.test-4-mru-policy.outputs.result}}"
+        TEST-5-FIFO-SIM_RESULTS: "${{steps.test-5-fifo-sim.outputs.result}}"
+        TEST-6-LRU-SIM_RESULTS: "${{steps.test-6-lru-sim.outputs.result}}"
+        TEST-7-MRU-SIM_RESULTS: "${{steps.test-7-mru-sim.outputs.result}}"
+        TEST-8-MEMORY_RESULTS: "${{steps.test-8-memory.outputs.result}}"
+        TEST-9-STYLE_RESULTS: "${{steps.test-9-style.outputs.result}}"
+      with:
+        runners: test-1-cache-and-store-creation,test-2-fifo-policy,test-3-lru-policy,test-4-mru-policy,test-5-fifo-sim,test-6-lru-sim,test-7-mru-sim,test-8-memory,test-9-style
