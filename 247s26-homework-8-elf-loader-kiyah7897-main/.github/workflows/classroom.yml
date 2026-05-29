@@ -1,0 +1,79 @@
+name: Autograding Tests
+'on': 
+- push
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Test 1. Add two numbers
+      id: test-1-add-two-numbers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 1. Add two numbers
+        setup-command: ''
+        command: make test-test1
+        timeout: 10
+        max-score: 2
+    - name: Test 2. Add 2 numbers plus a constant
+      id: test-2-add-2-numbers-plus-a-constant
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 2. Add 2 numbers plus a constant
+        setup-command: ''
+        command: make test-test2
+        timeout: 10
+        max-score: 2
+    - name: Test 3. Subtraction
+      id: test-3-subtraction
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 3. Subtraction
+        setup-command: ''
+        command: make test-test3
+        timeout: 10
+        max-score: 2
+    - name: Test 4. Malformed
+      id: test-4-malformed
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 4. Malformed
+        setup-command: ''
+        command: make test-malformed
+        timeout: 10
+        max-score: 2
+    - name: Test 5. No file and argument errors
+      id: test-5-no-file-and-argument-errors
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 5. No file and argument errors
+        setup-command: ''
+        command: make test-nofile
+        timeout: 10
+        max-score: 1
+    - name: Test 6. Style
+      id: test-6-style
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test 6. Style
+        setup-command: sudo pip3 install cpplint
+        command: make test-style
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST-1-ADD-TWO-NUMBERS_RESULTS: "${{steps.test-1-add-two-numbers.outputs.result}}"
+        TEST-2-ADD-2-NUMBERS-PLUS-A-CONSTANT_RESULTS: "${{steps.test-2-add-2-numbers-plus-a-constant.outputs.result}}"
+        TEST-3-SUBTRACTION_RESULTS: "${{steps.test-3-subtraction.outputs.result}}"
+        TEST-4-MALFORMED_RESULTS: "${{steps.test-4-malformed.outputs.result}}"
+        TEST-5-NO-FILE-AND-ARGUMENT-ERRORS_RESULTS: "${{steps.test-5-no-file-and-argument-errors.outputs.result}}"
+        TEST-6-STYLE_RESULTS: "${{steps.test-6-style.outputs.result}}"
+      with:
+        runners: test-1-add-two-numbers,test-2-add-2-numbers-plus-a-constant,test-3-subtraction,test-4-malformed,test-5-no-file-and-argument-errors,test-6-style
